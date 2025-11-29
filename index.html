@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natalie Harvey Creative Product Insert</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- Load Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Load Google Fonts: Rufina (Headings) and Sintony (Body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Rufina:wght@400;700&family=Sintony:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define Custom Font Classes */
+        .font-rufina {
+            font-family: 'Rufina', serif;
+        }
+        .font-sintony {
+            font-family: 'Sintony', sans-serif;
+        }
+
+        /* Base styles for the layout */
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; 
+            /* Added perspective to enable 3D transforms */
+            perspective: 1000px;
+        }
+
+        /* Change body background to light gray for the "floating paper" effect */
+        body {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            display: flex;
+            font-sintony;
+        }
+
+        /* Initial Sidebar Width (w-16 = 4rem) and Fixed Position */
+        #sidebar {
+            width: 4rem;
+            height: 100vh;
+            z-index: 50; /* Ensure it stays on top of content-area */
+        }
+
+        /* The main content area: ALWAYS starts after the initial 4rem sidebar margin */
+        #content-area {
+            margin-left: 4rem; /* Fixed initial sidebar width */
+            height: 100vh;
+            overflow-y: auto;
+            background-color: transparent; /* Transparent wrapper */
+        }
+        
+        /* The actual content element that receives the white background and 3D transforms */
+        #main-content {
+            background-color: white; /* The "floating paper" surface */
+            transform-origin: center center;
+            will-change: transform, opacity;
+            backface-visibility: hidden; /* Important for clean 3D rotation */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Initial shadow for lift */
+        }
+
+        /* Styling for the sideways titles (default state) - Flipped 90 degrees to read top-to-bottom */
+        .sideways-text {
+            writing-mode: vertical-lr;
+            transform: rotate(180deg);
+            font-size: 0.9rem;
+        }
+        
+        /* Adjusted style for the pipe separator */
+        .sideways-text-separator {
+            writing-mode: vertical-lr;
+            transform: rotate(180deg);
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 0.5rem;
+        }
+
+
+        /* Responsive adjustments for the content area padding */
+        .content-padding {
+            padding: 2rem 1rem;
+        }
+        @media (min-width: 640px) {
+            .content-padding {
+                padding: 3rem 2rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .content-padding {
+                padding: 4rem 8rem;
+            }
+        }
+    </style>
+</head>
+<body class="font-sintony flex">
+
+    <!-- LEFT SIDEBAR (Black Panel) -->
+    <!-- The whole sidebar is now the click target -->
+    <div id="sidebar" class="fixed left-0 top-0 bg-black text-white p-3 flex flex-col items-center justify-between cursor-pointer">
+
+        <!-- 1. Logo Placement (Default Vertical) - Now an Image -->
+        <div id="logo-default" class="pt-4 pb-2">
+            <!-- Mini logo at the top when collapsed -->
+            <a href="index.html">
+                <img src="Assets/NHC_NH-Logo.png" alt="Natalie Harvey Creative Logo"
+                     class="w-12 h-auto object-contain mx-auto cursor-pointer" id="nhc-logo-img">
+            </a>
+        </div>
+
+        <!-- Hidden Logo for Expanded State (Top Center) -->
+        <div id="logo-expanded" class="hidden absolute top-8 w-full text-center">
+            <!-- Full logo when expanded -->
+            <a href="index.html">
+                <img src="Assets/NHC-Logo-LIGHT.png" alt="Natalie Harvey Creative Logo" class="h-16 w-auto mx-auto cursor-pointer">
+            </a>
+        </div>
+
+        <!-- 3. Center Divider + Sideways Titles (Default State) - Compacted and using pipe separator -->
+        <div id="sideways-titles" class="flex-grow flex flex-col items-center justify-center space-y-0">
+            <!-- Easel.y -->
+            <span class="sideways-text font-rufina tracking-widest leading-none pt-2">Easel.y</span>
+            <!-- Separator -->
+            <span class="sideways-text-separator font-rufina text-gray-500">|</span>
+            <!-- Tin.y Canvas -->
+            <span class="sideways-text font-rufina tracking-widest leading-none pb-2">Tin.y Canvas</span>
+        </div>
+
+        <!-- 2. Social Section (Default Vertical) - ONLY ICONS VISIBLE -->
+        <div id="social-default" class="pb-2 flex flex-col items-center space-y-4">
+            <!-- Icons are centered and slightly larger -->
+            <a href="https://www.instagram.com/nerd_natt" target="_blank" class="hover:text-pink-500 transition duration-300">
+                <i class="fab fa-instagram text-2xl"></i>
+            </a>
+            <a href="https://www.tiktok.com/@nerd_natalie" target="_blank" class="hover:text-blue-400 transition duration-300">
+                <i class="fab fa-tiktok text-2xl"></i>
+            </a>
+        </div>
+
+        <!-- Expanded Menu Content (Hidden by default) -->
+        <div id="expanded-menu" class="absolute inset-0 p-10 flex flex-col items-center opacity-0 pointer-events-none overflow-y-auto">
+            <div class="mt-28 w-full max-w-md">
+
+                
+
+                <!-- EASEL.Y Section -->
+                <div class="text-center mb-10">
+                    <h2 class="font-rufina text-3xl tracking-widest mb-4 border-b border-gray-700 pb-2 inline-block">EASEL.Y</h2>
+                    <ul class="space-y-3 font-sintony text-lg mt-4">
+                        <li><a href="HowTo.html"block p-2 rounded-lg hover:bg-gray-800 transition duration-300">How To Assemble</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Find Natalie On: Social Links (Expanded Horizontal) -->
+            <div id="social-expanded" class="mt-auto w-full flex flex-col items-center space-y-4 pt-10 pb-10">
+                 <h3 class="font-rufina text-xl tracking-widest mb-4">Find Natalie On:</h3>
+                <div class="flex space-x-8">
+                    <a href="https://www.tiktok.com/@nerd_natalie" target="_blank" class="hover:text-blue-400 transition duration-300 flex flex-col items-center group">
+                        <i class="fab fa-tiktok text-3xl group-hover:scale-110 transition"></i>
+                        <span class="text-xs mt-1">@nerd_natalie</span>
+                    </a>
+                    <a href="https://www.instagram.com/nerd_natt" target="_blank" class="hover:text-pink-500 transition duration-300 flex flex-col items-center group">
+                        <i class="fab fa-instagram text-3xl group-hover:scale-110 transition"></i>
+                         <span class="text-xs mt-1">@nerd_natt</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT CONTENT AREA (Light Gray Background Wrapper) -->
+    <div id="content-area" class="flex-grow">
+        <div id="main-content" class="content-padding w-full max-w-4xl mx-auto rounded-lg">
+
+
+            <!-- HEADER: SITE LOGO/TITLE -->
+            <header class="text-center mb-12">
+                <a href="index.html"><img src="Assets/NHC-Logo-DARK.png" alt="Natalie Harvey Creative Logo" class="w-full max-w-[260px] md:max-w-[280px] mx-auto rounded-lg"></a>
+            </header>
+
+            <!-- PRIMARY PRODUCT SHOWCASE: EASELY -->
+            <section id="easely-section" class="mb-16">
+                <img src="Assets/NHC-Easel.y_Logo-DARK_.png" alt="Easel.y Logo" class="w-full max-w-[160px] md:max-w-[200px] mx-auto rounded-lg mb-6">
+
+                <p class="font-sintony text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto text-center" style="padding-bottom:25px;">
+                    This is your private, miniature studio. A system of easels and custom canvases, perfectly sized to nurture big ideas with zero pressure. Rediscover the joy of experimentation and the gentle start to fearless, beautiful art.
+                </p>
+
+                <div class="mb-6">
+                    <img src="Assets/NHC_Easel.y_Hero.png" alt="Easel.y Product Diagram" class="w-full max-w-[360px] md:max-w-[480px] mx-auto rounded-lg">
+                </div>
+
+                <div class="max-w-3xl mx-auto mb-8">
+                    <a href="HowTo.html" class="text-blue-600 hover:text-red-600 transition-colors">
+                        <h3 class="font-rufina text-xl mb-2 text-center">
+                            Need Help Assembling your <strong>Easel.y</strong>? <br>Click here
+                        </h3>
+                    </a>
+                    <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                        I believe that every piece you finish, no matter the size, deserves to be celebrated. It represents a victory over creative doubt. But miniature art often lacks a proper stage.
+                    </p>
+                    <p class="font-sintony text-base text-gray-700 leading-relaxed mt-4">
+                        The <strong>Easel.y</strong> is my nerdy way of making sure your progress always looks professional:
+                    </p>
+                </div>
+
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div>
+                        <h3 class="font-rufina text-xl text-gray-900 mb-2">
+                            Premium Display. Honest Quality.
+                        </h3>
+                        <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                            I used durable, elegant bamboo MDF and laser-cut every piece to exacting standards. The design is simple, elegant, and uncompromising. The <strong>Easel.y</strong> transforms your miniature canvases into striking, permanent displays that look intentional and elevated.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-rufina text-xl text-gray-900 mb-2">
+                            Validate Your Dedication
+                        </h3>
+                        <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                            The <strong>Easel.y</strong> ensures your smallest paintings sit on a high-quality platform. Giving your work this level of presentation instantly validates your effort and makes your entire collection look like the professional archive it is becoming.
+                        </p>
+                    </div>
+
+                    <div class="text-center italic pt-4">
+                        <p class="font-sintony text-lg text-gray-800 leading-relaxed">
+                            The <strong>Easel.y</strong> is the elegant stage. Your art is the star.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECONDARY PRODUCT SHOWCASE: TINY CANVAS -->
+            <section id="tiny-canvas-section" class="mb-16">
+                <img src="Assets/NHC-Tin.yCanvas_Logo-DARK.png" alt="Tin.y Canvas Logo" class="w-full max-w-[160px] md:max-w-[200px] mx-auto rounded-lg mb-6">
+
+                <h2 class="font-rufina text-2xl md:text-3xl text-gray-900 mb-6 text-center">
+                    Permission to Play!
+                </h2>
+
+                <div class="mb-6">
+                    <img src="Assets/NHC-Tin.yCanvas_HERO.png" alt="Tin.y Canvas Collection" class="w-full max-w-[360px] md:max-w-[480px] mx-auto rounded-lg">
+                </div>
+
+                <div class="max-w-3xl mx-auto mb-8">
+                    <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                        I know that feeling. That intimidating, expensive stare-down with a blank canvas that makes you hold back your best ideas. When the stakes are high (expensive supplies, hours of commitment), we stop experimenting and stop growing.
+                    </p>
+                    <p class="font-sintony text-base text-gray-700 leading-relaxed mt-4">
+                        I created the <strong>Tin.y Canvas</strong> because every artist deserves to practice freely, without the guilt.
+                    </p>
+                </div>
+
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div>
+                        <h3 class="font-rufina text-xl text-gray-900 mb-2">
+                            Less Risk, More Learning
+                        </h3>
+                        <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                            Save your time and those costly supplies. Our tiny format lets you try that tricky new technique or experiment wildly with mediums. I found that when the cost of "failure" is next to nothing, my skill set expands almost instantly.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-rufina text-xl text-gray-900 mb-2">
+                            Instant Inspiration, Zero Hesitation
+                        </h3>
+                        <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                            I hate being stuck! That's why I designed our unique, precision laser-cut shapes. They eliminate the blank slate frustration, giving you an immediate starting point. The canvas itself sparks the idea, freeing you to focus only on the art.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-rufina text-xl text-gray-900 mb-2">
+                            Consistent Practice, Reliable Skill
+                        </h3>
+                        <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                            Stop laboring over one endless piece. Finish a high-quality painting in an afternoon and feel that rush of accomplishment. Finishing more art is the fastest, most reliable way to get better at art.
+                        </p>
+                    </div>
+
+                    <div class="text-center italic pt-4">
+                        <p class="font-sintony text-lg text-gray-800 leading-relaxed">
+                            I designed the <strong>Tin.y Canvas</strong> to eliminate the creative burden, leaving you with only the pure excitement of making.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SOCIAL & SHARING CALL-TO-ACTION (TOP) -->
+            <section id="social-top" class="mb-16 py-8 bg-gray-50 -mx-4 px-4 md:-mx-8 md:px-8 lg:-mx-32 lg:px-32">
+                <div class="text-center">
+                    <h3 class="font-rufina text-2xl text-gray-900 mb-6">Support & Share</h3>
+                    <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6 font-sintony text-lg">
+                        <a href="https://www.instagram.com/nerd_natt" target="_blank" rel="noopener noreferrer"
+                           class="flex items-center space-x-2 hover:text-gray-600 transition-colors">
+                            <img src="Assets/NHC_Instagram_Dark.png" alt="Instagram" class="w-6 h-6">
+                            <span>@nerd_natt</span>
+                        </a>
+                        <span class="text-gray-400 hidden md:inline">|</span>
+                        <a href="https://www.tiktok.com/@nerd_natalie" target="_blank" rel="noopener noreferrer"
+                           class="flex items-center space-x-2 hover:text-gray-600 transition-colors">
+                            <i class="fab fa-tiktok text-2xl"></i>
+                            <span>@nerd_natalie</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- THE ECOSYSTEM PHILOSOPHY -->
+            <section id="ecosystem-section" class="mb-16">
+                <h2 class="font-rufina text-2xl md:text-3xl text-gray-900 mb-6 text-center">
+                    The Ultimate Collection is Your Own.
+                </h2>
+
+                <div class="max-w-3xl mx-auto mb-8">
+                    <h3 class="font-rufina text-xl md:text-2xl text-gray-900 mb-4 text-center">
+                        💎 Collect Yourself!
+                    </h3>
+                    <p class="font-sintony text-base text-gray-700 leading-relaxed mb-4">
+                        Stop collecting what someone else made. Start curating your own process.
+                    </p>
+                    <p class="font-sintony text-base text-gray-700 leading-relaxed mb-4">
+                        You aren't buying another funko or collectible to sit sealed on a shelf. You are buying the framework for an evolving, hand-made gallery—a dedicated space for personal growth.
+                    </p>
+                    <p class="font-sintony text-base text-gray-700 leading-relaxed font-bold">
+                        <strong>Easel.y</strong> transforms every small canvas into a tangible milestone.
+                    </p>
+                </div>
+
+                <div class="max-w-3xl mx-auto space-y-6 mb-8">
+                    <div>
+                        <h3 class="font-rufina text-xl text-gray-900 mb-2">
+                            Collect Your Skill
+                        </h3>
+                        <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                            Each uniquely shaped mini-canvas becomes a record of a technique you mastered, a color palette you discovered, or a risk you dared to take.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-rufina text-xl text-gray-900 mb-2">
+                            Curate Your Journey
+                        </h3>
+                        <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                            The miniature easels and the canvases they hold are designed to display your developing skill, not mass-produced nostalgia.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-rufina text-xl text-gray-900 mb-2">
+                            Exhibit Your Growth
+                        </h3>
+                        <p class="font-sintony text-base text-gray-700 leading-relaxed">
+                            Build a collection that is 100% you. Display the history of your passion, the evidence of your practice, and the foundation of your next masterpiece.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <h3 class="font-rufina text-xl md:text-2xl text-gray-900 font-bold">
+                        It's time to create, collect, and display—yourself.
+                    </h3>
+                </div>
+            </section>
+
+            <!-- FOOTER & SOCIAL SHARING (BOTTOM) -->
+            <section id="social-bottom" class="pb-16 py-8 bg-gray-50 -mx-4 px-4 md:-mx-8 md:px-8 lg:-mx-32 lg:px-32">
+                <div class="text-center">
+                    <h3 class="font-rufina text-2xl text-gray-900 mb-6">Support & Share</h3>
+                    <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6 font-sintony text-lg">
+                        <a href="https://www.tiktok.com/@nerd_natalie" target="_blank" rel="noopener noreferrer"
+                           class="flex items-center space-x-2 hover:text-gray-600 transition-colors">
+                            <i class="fab fa-tiktok text-2xl"></i>
+                            <span>@nerd_natalie</span>
+                        </a>
+                        <span class="text-gray-400 hidden md:inline">|</span>
+                        <a href="https://www.instagram.com/nerd_natt" target="_blank" rel="noopener noreferrer"
+                           class="flex items-center space-x-2 hover:text-gray-600 transition-colors">
+                            <img src="Assets/NHC_Instagram_Dark.png" alt="Instagram" class="w-6 h-6">
+                            <span>@nerd_natt</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const logoDefault = document.getElementById('logo-default');
+        const logoExpanded = document.getElementById('logo-expanded');
+        const sidewaysTitles = document.getElementById('sideways-titles');
+        const socialDefault = document.getElementById('social-default');
+        const expandedMenu = document.getElementById('expanded-menu');
+        const mainContent = document.getElementById('main-content');
+
+        let isExpanded = false;
+        
+        // Define the target width for the expanded sidebar
+        const expandedWidth = '100vw'; 
+
+        // Set up GSAP initial states and animation listener
+        gsap.set(expandedMenu, { opacity: 0, pointerEvents: 'none' });
+        
+        // Set initial state for main content so the 'push back' animation starts from scale 1 and opacity 1
+        gsap.set(mainContent, { scale: 1, opacity: 1, willChange: 'transform, opacity' });
+
+        // IMPORTANT: We need to handle the click event carefully so that clicking inside the expanded menu doesn't immediately close it
+        sidebar.addEventListener('click', (e) => {
+             // If sidebar is contracted, expand it on any click
+            if (!isExpanded) {
+                toggleSidebar();
+            } else {
+                // If expanded, check if the click target is an interactive element (link, button)
+                if (e.target.closest('a') || e.target.tagName === 'BUTTON') {
+                    // Let the link click happen, then close the menu after a short delay
+                    setTimeout(toggleSidebar, 150); 
+                } else if (e.target.id === 'sidebar' || e.target.id === 'expanded-menu' || e.target.closest('#expanded-menu')) {
+                    // Clicking the background of the menu closes it
+                    toggleSidebar();
+                }
+            }
+        });
+        
+        // Function to handle the actual expansion/contraction animation
+        function toggleSidebar() {
+            
+            // GSAP settings for 3D transforms
+            const pushBackProps = {
+                scale: 0.95,
+                opacity: 0.4,
+                z: -150, // Pushes back in 3D space
+                rotationY: 2, // Slight tilt for 3D feel
+                boxShadow: '0 0px 40px rgba(0,0,0,0.5)', // Increased shadow when pushed back
+                duration: 0.4,
+                ease: "power2.inOut"
+            };
+            
+            const pullForwardProps = {
+                scale: 1,
+                opacity: 1,
+                z: 0,
+                rotationY: 0,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Restore original shadow
+                duration: 0.5,
+                ease: "power2.inOut",
+                clearProps: "transform, opacity, boxShadow" // Clear GSAP styles for cleaner state
+            };
+
+
+            if (isExpanded) {
+                // CONTRACT (Close Sidebar - Content pulls forward AFTER sidebar closes)
+                const tl = gsap.timeline();
+
+                // 1. Hide expanded menu and logo
+                tl.to([expandedMenu, logoExpanded.querySelector('img')], { opacity: 0, duration: 0.3, ease: "power1.in" }, 0);
+                
+                // 2. Shrink sidebar (overlay slides closed)
+                tl.to(sidebar, { width: '4rem', duration: 0.5, ease: "power2.inOut" }, 0.2); // Start sliding closed after a delay
+                
+                // 3. Bring content forward (Pulls forward AFTER sidebar is mostly closed)
+                tl.to(mainContent, pullForwardProps, 0.7); // Start pull forward late in the timeline
+
+                // 4. Show default (vertical) logo, titles, and social icons ("Unfurling")
+                tl.fromTo(logoDefault, { opacity: 0, display: 'none' }, { opacity: 1, display: 'flex', duration: 0.3 }, 1.1);
+                tl.fromTo(sidewaysTitles, { opacity: 0, display: 'none', y: 10 }, { opacity: 1, display: 'flex', y: 0, duration: 0.4, ease: "power2.out" }, 1.15);
+                tl.fromTo(socialDefault, { opacity: 0, display: 'none', y: 10 }, { opacity: 1, display: 'flex', y: 0, duration: 0.4, ease: "power2.out" }, 1.25);
+
+                // Clean up display
+                tl.set(logoExpanded, { display: 'none' }, 0.2);
+                
+                isExpanded = false;
+
+            } else {
+                // EXPAND (Open Sidebar - Content pushes back THEN menu slides over)
+                
+                const tl = gsap.timeline();
+                
+                // 1. Hide default elements
+                tl.to([logoDefault, sidewaysTitles, socialDefault], { opacity: 0, duration: 0.3, ease: "power1.in", onComplete: () => {
+                    gsap.set([logoDefault, sidewaysTitles, socialDefault], { display: 'none' });
+                }}, 0);
+                
+                // 2. Apply the "push back" effect on the main content area (dim, scale, and 3D push)
+                tl.to(mainContent, pushBackProps, 0.1); // PUSH BACK FIRST
+
+                // 3. Expand sidebar (overlay slides open)
+                tl.to(sidebar, { width: expandedWidth, duration: 0.6, ease: "power2.inOut" }, 0.4); // SLIDE OPEN AFTER PUSH BACK STARTS
+
+                // 4. Show expanded logo and menu
+                tl.set(logoExpanded, { display: 'block' }, 0.7) // Show expanded logo container
+                  .fromTo(logoExpanded.querySelector('img'), { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.75)
+                  .to(expandedMenu, { opacity: 1, duration: 0.5, pointerEvents: 'auto', ease: "power2.out" }, 0.9);
+
+                isExpanded = true;
+            }
+        }
+        
+        // Ensure sidebar size is corrected on resize if it's open, but do NOT touch contentArea margin.
+        window.addEventListener('resize', () => {
+            if (isExpanded) {
+                gsap.set(sidebar, { width: '100vw' });
+            }
+        });
+    </script>
+</body>
+</html>
